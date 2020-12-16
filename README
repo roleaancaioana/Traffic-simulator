@@ -1,0 +1,119 @@
+// Copyright Rolea Anca-Ioana, grupa 333CA
+
+===========================Task 1(simple_semaphore)=============================
+=> La acest task am folosit metoda sleep pentru a marca faptul ca masinile 
+trebuie sa astepte un numar de secunde la semafor. Prin intermediul apelarii
+acestei metode thread-ul corespunzator masinii de la semafor se va opri din 
+executie pentru cateva secunde, acest lucru simbolizand asteptarea masinii
+la semafor.
+
+===========================Task 2(simple_n_roundabout)==========================
+=> La acest task am folosit un semafor pentru a nu permite intrarea in intersectie
+a mai mult de n masini. Mi-am creat clasa SimpleNRoundabout in care am introdus
+semaforul static ce m-a ajutat in rezolvarea problemei. Asadar, fiecare thread
+va putea intra in zona critica (va putea apela acquire) doar atunci cand in acea
+zona nu sunt n thread-uri prezente deja. Dupa ce se reuseste apelarea metodei acquire,
+masina va putea intra in intersectie si va sta acolo cateva secunde, fapt marcat
+prin folosirea metodei sleep. Apoi, se pregateste iesirea thread-ului din zona
+critica (echivalenta cu iesirea masinii din intersectie) prin afisarea unui mesaj
+sugestiv si apelarea metodei release.
+
+==========================Task 3(simple_strict_1_car_roundabout)=================
+=> La acest task am folosit un bloc de cod sincronizat pentru a permite intrarea
+in intersectie a unei singure masini din fiecare directie. Mi-am creat mai multe
+obiecte de tip StartDirectionCar(pe care le-am pus intr-un ArrayList in clasa
+SimpleStrictOneCarRoundabout) pentru ca acestea sa poata reprezenta monitorul
+corespunzator fiecarei directii din intersectie. Fiecare thread va trebui sa 
+obtina monitorul intersectiei din care face parte pentru a putea intra in regiunea
+critica, altfel va astepta ca regiunea critica sa se elibereze. Pentru a marca
+timpul pe care o masina trebuie sa-l petreaca in intersectie am utilizat metoda
+sleep. La iesirea din zona critica, fiecare thread va afisa mesajul corespunzator
+(cel al iesirii din intersectie).
+
+=========================Task 4(simple_strict_x_car_roundabout)==================
+=> La acest task am utilizat mai multe semafoare (am considerat ca am 1 pentru 
+fiecare intersectie) pe care le-am pus intr-un ArrayList din clasa 
+SimpleXCarRoundabout. Aceste semafoare vor permite trecerea a maximumCars masini 
+in intersectie. De asemenea, a trebuit sa utilizez 2 bariere pentru afisarea
+corecta a mesajelor cerute, dar si pentru a asigura faptul ca in intersectie vor
+fi prezente strict x masini dintr-o anumita directie. In metoda handle
+(corespunzatoare acestui task) din clasa IntersectionHandlerFactory am utilizat la
+inceput bariera barrierForAllCars pentru a astepta ca toate masinile sa ajunga la 
+intrarea in intersectie. 
+
+=> Apoi fiecare thread va incerca intrarea in zona critica (echivalenta cu incercarea 
+unei masini de a intra in intersectie) prin apelul metodei acquire pentru semaforul
+corespunzator directiei din care vine masina. Daca in zona critica nu se afla deja
+numarul maxim de thread-uri ce pot fi prezente, atunci thread-ul curent va putea intra,
+altfel va astepta eliberarea regiunii critice. Pentru afisarea corecta a celui de-al
+treilea mesaj am utilizat o alta bariera, pentru a sicroniza toate masinile care au
+intrat in giratoriu (n * x masini). Pentru a marca timpul pe care o masina trebuie 
+sa-l petreaca in intersectie am utilizat din nou metoda sleep. Pentru afisarea corecta
+a ultimului mesaj, am utilizat din nou aceeasi bariera ca la cel de-al treilea mesaj
+pentru a sincroniza thread-urile care au intrat in zona critica. La iesirea din 
+regiunea critica fiecare thread va semnala asta prin apelarea metodei release, astfel
+putand intra o alta masina in intersectie.
+
+=======================Task 5(simple_max_x_car_roundabout)===========================
+=> Acest task este foarte asemanator cu cel anterior, diferenta dintre implementari
+fiind aceea ca am renuntat la utilizarea barierelor pentru a satisface conditia
+ca in giratoriu sa fie cel mult x masini care vin din aceeasi directie.
+
+========================Task 6(priority_intersection)=================================
+=> Pentru rezolvarea acestui task am utilizat 2 liste sincronizate pe care le-am
+introdus in clasa PriorityIntersection. highPriorityCars este menita sa mentina
+evidenta tuturor masinilor cu prioritate care intra in intersectie, in timp ce
+lowPriorityCars mentine evidenta tuturor masinilor fara prioritate care intentioneaza
+sa intre in intersectie. Am folosit conceptul de busy waiting in cazul masinilor
+fara prioritate pentru a indeplini conditia ca acestea sa intre in intersectie doar
+daca nu exista masini cu prioritate deja acolo. De asemenea, pentru a asigura 
+faptul ca masinile fara prioritate vor trece una cate una prin intersectie, am utilizat
+un bloc de cod sincronizat care-mi permite sa scot masinile din lista pe rand, in ordine.
+
+=============================Task 7(crosswalk)========================================
+=> La acest task am utilizat un AtomicInteger pentru a putea gestiona mesajele care
+trebuiesc afisate. Astfel, am reusit sa afisez mesajele corespunzatoare doar daca
+ele difereau de mesajul precedent afisat. De asemenea, am utilizat si metodele
+isFinished() si isPass() din clasa Pedestrians pentru a verifica daca pietonii mai vin
+la trecere si daca se afla pe trecerea de pietoni sau nu.
+
+=============================Task 8(simple_maintenance)=================================
+=> La acest task am utilizat pentru rezolvarea problemei 2 semafoare pe care le-am 
+declarat in clasa SimpleMaintenance. Unul dintre ele permite trecerea a x masini, iar
+celalalt nu permite trecerea niciunei masini initial pentru ca ambele sensuri trebuie
+sa circule alternativ. Asadar, la inceput se va permite doar trecerea la semafor a x
+masini pentru sensul 0 de mers. Am utilizat si o bariera pentru a asigura faptul ca
+vor trece x masini prin primul semafor si abia dupa aceea se va permite trecerea 
+masinilor aflate la celalalt sens de mers (abia atunci se va schimba culoarea celuilalt
+semafor :D ).
+
+=============================Task 9(complex_maintenance)================================
+=> Pentru rezolvarea acestui task am introdus un nou camp in clasa Car, newLaneForCar,
+ce simbolizeaza banda noua pe care va circula o masina. 
+=> De asemenea, am creat clasa ComplexMaintenance in care am introdus lista oldLanes cu
+ajutorul careia voi sti din ce banda veche a venit o masina. Pentru a reprezenta cuplajul
+de benzi noi am construit lista coupledLanes ce contine. Fiecare banda noua va contine
+o coada cu benzile vechi pe care le gestioneaza, de aceea coupledLanes este o lista de 
+cozi. Pentru a putea vedea carei benzi noi ii apartine o banda veche a trebuit sa-mi
+creez lista startAndEnds. Fiecarei benzi noi ii va corespunde un interval de benzi vechi
+avand id-urile in intervalul [start, end).
+=> E de preferat sa se urmareasca si comentariile din cod la acest task.
+
+=============================Task 10(railroad)==========================================
+=> La acest task, pentru a putea mentine ordinea in care masinile au ajuns pe fiecare
+sens am utilizat un LinkedBlockingQueue pe care l-am declarat in noua clasa Railroad.
+Pentru a putea astepta ajungerea tuturor masinilor in intersectie inainte ca trenul sa
+treaca deja, am utilizat o bariera. De asemenea, am utilizat aceeasi bariera pentru a 
+sincroniza din nou thread-urile dupa ce trece trenul. La final am scos masinile din acel
+LinkedBlockingQueue pentru a reliefa trecerea acestora de bariera, pe rand, in ordinea
+in care au venit. Pentru a reusi acest lucru a fost nevoie si de introducerea unui bloc
+sincronizat.
+
+==============================Alte mentiuni asupra implementarii========================
+=> Am creat clasa MessagesFactory in care am trecut toate mesajele pe care a trebuit sa 
+le afisez de-a lungul temei. Unele dintre ele se mai repetau, de aceea mi s-a parut ok 
+sa fac asta.
+
+=================================Feedback===============================================
+=> Mi-a placut tema pentru ca am aplicat cam tot ce am invatat pana acum la thread-uri 
+in Java. :D
